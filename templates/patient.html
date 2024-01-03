@@ -1,12 +1,76 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        var socket = io();
+        //var patient_id = {{ id }}; // it works, don't touch it
+        socket.on('new_data', function(msg) {
+
+            $('#L1').text(msg["L1"]);
+            $('#L2').text(msg["L2"]);
+            $('#L3').text(msg["L3"]);
+
+            $('#R1').text(msg["R1"]);
+            $('#R2').text(msg["R2"]);
+            $('#R3').text(msg["R3"]);
+        })
+
+        $('#start').click(function() {
+            socket.emit('give_me_data', '');
+        })
+
+        $('#stop').click(function() {
+            socket.emit('no_more_data', '');
+        })
+
+        $('#load_figure').click(function() {
+            socket.emit('load_me_figure', '');
+        })
+
+        socket.on('here_is_your_figure', function(msg) {
+            $('#figure').html(msg);
+        })
+    });
+</script>
 
 {% endblock %}
+
 
 {% block body %}
 
 {{ patient_details|safe }}
-{{ patient_mesurmants|safe }}
+{{ async_mode }}
+<div id="live_figure1" class="live_figure">
+    <h2>Patient: {{ id }}</h2>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <table>
+        <tr>
+            <th></th>
+            <th>L1</th>
+            <th>L2</th>
+            <th>L3</th>
+
+            <th>R1</th>
+            <th>R2</th>
+            <th>R3</th>
+        </tr>
+        <tr>
+            <th>Values:</th>
+            <td><p id="L1"></p></td>
+            <td><p id="L2"></p></td>
+            <td><p id="L3"></p></td>
+
+            <td><p id="R1"></p></td>
+            <td><p id="R2"></p></td>
+            <td><p id="R3"></p></td>
+        </tr>
+    </table>
+    <p id="figure"></p>
+    <button id="load_figure">Load figure</button>
+  </div>
 
 {% endblock %}

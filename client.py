@@ -24,3 +24,8 @@ class Client:
             el["trace"]["name"]] + [s["anomaly"] for s in el["trace"]["sensors"]] + [s["value"] for s in el["trace"]["sensors"]]
 
 
+if __name__ == '__main__':
+    client = Client()
+    db = DB()
+    for i in range(1,7):
+        print(client.get_mesurment_for_patient(i))

@@ -48,8 +48,8 @@ class DB:
         self.db_context.commit()
     
 
-    def insert(self, dict):
-        self.cursor.execute(insert, (dict["id"], dict["anL1"], dict["anL2"], dict["anL3"], dict["anR1"], dict["anR2"], dict["anR3"], dict["R1"], dict["R2"], dict["R3"], dict["L1"], dict["L2"], dict["L3"]))
+    def insert(self, id, dict):
+        self.cursor.execute(insert, (id, dict["anL1"], dict["anL2"], dict["anL3"], dict["anR1"], dict["anR2"], dict["anR3"], dict["R1"], dict["R2"], dict["R3"], dict["L1"], dict["L2"], dict["L3"]))
         self.db_context.commit()
 
     def get(self, id):
