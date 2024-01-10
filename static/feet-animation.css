@@ -1,0 +1,62 @@
+#animated-container {
+    position: relative;
+    width: 300px;
+  }
+
+  #animated-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    /*transform: translate(19px, 19px);*/
+  }
+
+  .pulsing-circle {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 0, 0, 0.5);
+    border-radius: 50%;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  #L1 {
+      top: 35%;
+      left: 37%;
+  }
+
+  #L2 {
+      top: 41%;
+      left: 19%;
+  }
+
+  #L3 {
+      top: 75%;
+      left: 29%;
+  }
+
+  #R1 {
+      top: 35%;
+      left: 63%;
+  }
+
+  #R2 {
+      top: 41%;
+      left: 81%;
+  }
+
+  #R3 {
+      top: 75%;
+      left: 71%;
+  }
+
+  .pulsing-circle label {
+    position: inherit;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  

@@ -6,16 +6,39 @@
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function() {
         var socket = io();
-        //var patient_id = {{ id }}; // it works, don't touch it
+        function scale(val)
+        {
+            return 1 + val * 0.2 / 1023;
+        }
+
+        //var patient_id = <p id="id"></p>; // it works, don't touch it
         socket.on('new_data', function(msg) {
 
-            $('#L1').text(msg["L1"]);
-            $('#L2').text(msg["L2"]);
-            $('#L3').text(msg["L3"]);
+            $('#L1-val').text(msg["L1"]);
+            $('#L2-val').text(msg["L2"]);
+            $('#L3-val').text(msg["L3"]);
 
-            $('#R1').text(msg["R1"]);
-            $('#R2').text(msg["R2"]);
-            $('#R3').text(msg["R3"]);
+            $('#R1-val').text(msg["R1"]);
+            $('#R2-val').text(msg["R2"]);
+            $('#R3-val').text(msg["R3"]);
+
+            if(msg["anL1"] == 1){
+                $('.live-cell').css({'background-color': 'red',
+                                    'color': 'white'});
+            } else {
+                $('.live-cell').css({'background-color': 'white',
+                                        'color': 'black'});
+            }
+
+            $('#L1').css({'transform': 'scale(' + (scale(msg["L1"])) + ')'});
+            $('#L2').css({'transform': 'scale(' + (scale(msg["L2"])) + ')'});
+            $('#L3').css({'transform': 'scale(' + (scale(msg["L3"])) + ')'});
+
+            $('#R1').css({'transform': 'scale(' + (scale(msg["R1"])) + ')'});
+            $('#R2').css({'transform': 'scale(' + (scale(msg["R2"])) + ')'});
+            $('#R3').css({'transform': 'scale(' + (scale(msg["R3"])) + ')'});
+
+
         })
 
         $('#start').click(function() {
@@ -33,6 +56,32 @@
         socket.on('here_is_your_figure', function(msg) {
             $('#figure').html(msg);
         })
+
+        socket.on('alarm', function(msg) {
+            alert(msg);
+        })
+
+        var window_frame = document.getElementById("window-frame");
+        var window_offset = document.getElementById("window-offset");
+        var activity_figure = document.getElementById("activity-figure");
+
+        window_frame.oninput = function() {
+            socket.emit('update_window_frame', this.value);
+        }
+
+        window_offset.oninput = function() {
+            socket.emit('upadate_window_offset', this.value);
+        }
+
+        socket.on('update_activity_figure', function(msg) {
+            activity_figure.innerHTML = msg;
+        })
+
+        var figure_button = document.getElementById("load_figure");
+
+        figure_button.onclick = function() {
+            socket.emit('load_me_figure', '');
+        }
     });
 </script>
 
@@ -41,36 +90,74 @@
 
 {% block body %}
 
-{{ patient_details|safe }}
+
 {{ async_mode }}
-<div id="live_figure1" class="live_figure">
-    <h2>Patient: {{ id }}</h2>
-    <button id="start">Start</button>
-    <button id="stop">Stop</button>
-    <table>
-        <tr>
-            <th></th>
-            <th>L1</th>
-            <th>L2</th>
-            <th>L3</th>
+    
+        {{ patient_details|safe }}
+        <div id="live_figure1" class="live_figure">
+            <h2>Patient: <p id="id"></p></h2>
+            <button id="start">Start</button>
+            <button id="stop">Stop</button>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>L1</th>
+                    <th>L2</th>
+                    <th>L3</th>
 
-            <th>R1</th>
-            <th>R2</th>
-            <th>R3</th>
-        </tr>
-        <tr>
-            <th>Values:</th>
-            <td><p id="L1"></p></td>
-            <td><p id="L2"></p></td>
-            <td><p id="L3"></p></td>
+                    <th>R1</th>
+                    <th>R2</th>
+                    <th>R3</th>
+                </tr>
+                <tr>
+                    <th>Values:</th>
+                    <td class="live-cell" ><p id="L1-val"></p></td>
+                    <td class="live-cell" ><p id="L2-val"></p></td>
+                    <td class="live-cell" ><p id="L3-val"></p></td>
 
-            <td><p id="R1"></p></td>
-            <td><p id="R2"></p></td>
-            <td><p id="R3"></p></td>
-        </tr>
-    </table>
-    <p id="figure"></p>
-    <button id="load_figure">Load figure</button>
-  </div>
+                    <td class="live-cell" ><p id="R1-val"></p></td>
+                    <td class="live-cell" ><p id="R2-val"></p></td>
+                    <td class="live-cell" ><p id="R3-val"></p></td>
+                </tr>
+            </table>
+        </div>
 
+        <div id="feet-animation">
+            <div id="animated-container">
+                <img src="../static/feets.jpg" alt="Your Image" id="animated-image">
+                <div id="L1" class="pulsing-circle">
+                    <label for="pulsing-circle">L1</label>
+                </div>
+                <div id="L2" class="pulsing-circle">
+                    <label for="pulsing-circle">L2</label>
+                </div>
+                <div id="L3" class="pulsing-circle">
+                    <label for="pulsing-circle">L3</label>
+                </div>
+                
+                <div id="R1" class="pulsing-circle">
+                    <label for="pulsing-circle">R1</label>
+                </div>
+                <div id="R2" class="pulsing-circle">
+                    <label for="pulsing-circle">R2</label>
+                </div>
+                <div id="R3" class="pulsing-circle">
+                    <label for="pulsing-circle">R3</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="right split">
+        <div id="activity-figure-container">
+            <button id="load_figure">Load figure</button>
+            <div id="activity-figure"></div>
+            <div class="activity-figure-controllers">
+                <p>Size of the window frame</p>
+                <input type="range" min="1" max="100" value="50" class="slider" id="window-frame">
+                <p>Position of the window frame</p>
+                <input type="range" min="1" max="100" value="50" class="slider" id="window-offset">
+            </div>
+        </div>
+    </div>
 {% endblock %}

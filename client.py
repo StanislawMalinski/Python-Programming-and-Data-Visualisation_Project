@@ -2,9 +2,10 @@ import requests
 from db import DB 
 
 BASE_URL = 'http://tesla.iem.pw.edu.pl:9080/v2/monitor/{index}'
-COLUMN_NAME = ['birthdate', 'disabled', 'id', 'lastname', 'firstname', 'trace_name', 'anL1', 'anL2', 'anL3', 'anR1', 'anR2', 'anR3', 'R1', 'R2', 'R3', 'L1', 'L2', 'L3']
+
 
 class Client:
+    COLUMN_NAME = ['birthdate', 'disabled', 'id', 'lastname', 'firstname', 'trace_name', 'anL1', 'anL2', 'anL3', 'anR1', 'anR2', 'anR3', 'R1', 'R2', 'R3', 'L1', 'L2', 'L3']
     def __init__(self, timeout=5):
         self.timeout = timeout
 
@@ -13,7 +14,7 @@ class Client:
         return self._get_dict(response.json())
     
     def _get_dict(self, row):
-        return dict(zip(COLUMN_NAME,  self._get_row(row)))
+        return dict(zip(self.COLUMN_NAME, self._get_row(row)))
 
     def _get_row(self, el):
         return [el["birthdate"],
@@ -22,10 +23,3 @@ class Client:
             el["lastname"],
             el["firstname"],
             el["trace"]["name"]] + [s["anomaly"] for s in el["trace"]["sensors"]] + [s["value"] for s in el["trace"]["sensors"]]
-
-
-if __name__ == '__main__':
-    client = Client()
-    db = DB()
-    for i in range(1,7):
-        print(client.get_mesurment_for_patient(i))
