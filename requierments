@@ -1,6 +1,8 @@
 Flask
 requests
-sqlite3
 socketio
+flask_socketio
 matplotlib
 pandas
+dash
+dash_bootstrap_components

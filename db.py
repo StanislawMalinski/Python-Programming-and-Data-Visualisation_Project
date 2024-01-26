@@ -29,7 +29,7 @@ insert = '''
 select = '''
             SELECT * FROM HISTORY 
                 WHERE patient_id = ?
-                ORDER BY time DESC
+                ORDER BY time ASC
         '''
 
 clean = '''
@@ -37,17 +37,10 @@ clean = '''
                 WHERE time < datetime('now', '-10 minutes')
         '''
 
-select_anomaly = '''
-            SELECT trace FROM HISTORY
-                WHERE patient_id = ?
-                AND (anL1 = 1 OR anL2 = 1 OR anL3 = 1 OR anR1 = 1 OR anR2 = 1 OR anR3 = 1)
-                ORDER BY time DESC
-            '''
-
 connection = "data_base/history.db"
 
 class DB:
-    COLUMN_NAME = [ 'id', 'patient_id', 'anL1', 'anL2', 'anL3', 'anR1', 'anR2', 'anR3', 'R1', 'R2', 'R3', 'L1', 'L2', 'L3', 'time']
+    COLUMN_NAME = [ 'id', 'patient_id', 'anL1', 'anL2', 'anL3', 'anR1', 'anR2', 'anR3', 'R1', 'R2', 'R3', 'L1', 'L2', 'L3', 'time', 'time-stamp']
     REF_DATE = datetime.strptime("1997-01-01 00:00:00" ,"%Y-%m-%d %H:%M:%S")
     def __init__(self):
         self.db_context = sqlite3.connect(connection)
@@ -67,13 +60,12 @@ class DB:
         m = self._to_seconds(records[-1][-1])
         for index, record in enumerate(records):
             record = list(record)
-            record[-1] = self._to_seconds(record[-1]) - m
+            record.append(record[-1])
+            record[-2] = self._to_seconds(record[-1]) - m
             records[index] = tuple(record)
         return records
 
     def close(self):
-        #self.cursor.execute(clean)
-        #self.db_context.commit()
         self.db_context.close()
 
     def _to_seconds(self, time):

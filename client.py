@@ -5,7 +5,7 @@ BASE_URL = 'http://tesla.iem.pw.edu.pl:9080/v2/monitor/{index}'
 
 
 class Client:
-    COLUMN_NAME = ['birthdate', 'disabled', 'id', 'lastname', 'firstname', 'trace_name', 'anL1', 'anL2', 'anL3', 'anR1', 'anR2', 'anR3', 'R1', 'R2', 'R3', 'L1', 'L2', 'L3']
+    COLUMN_NAME = ['birthdate', 'disabled', 'id', 'lastname', 'firstname', 'trace_name', 'anL1', 'anL2', 'anL3', 'anR1', 'anR2', 'anR3', 'R1', 'R2', 'R3', 'L1', 'L2', 'L3', 'time-stamp']
     def __init__(self, timeout=5):
         self.timeout = timeout
 
@@ -22,4 +22,5 @@ class Client:
             el["id"],
             el["lastname"],
             el["firstname"],
-            el["trace"]["name"]] + [s["anomaly"] for s in el["trace"]["sensors"]] + [s["value"] for s in el["trace"]["sensors"]]
+            el["trace"]["name"]] + [s["anomaly"] for s in el["trace"]["sensors"]] + [s["value"] for s in el["trace"]["sensors"]] + [DateTime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        

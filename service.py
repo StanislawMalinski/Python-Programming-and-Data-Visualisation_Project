@@ -135,6 +135,31 @@ class Service:
         df = df.iloc[start:end]
         return self.plot(df)
 
+    def replay_set_up(self, patient_id):
+        self.replay_index = 0
+        self.replay_df = self.get_df(patient_id)
+        return self.replay_df.iloc[self.replay_index]
+
+    def replay_row(self):
+        print(self.replay_index)
+        return self.replay_df.iloc[self.replay_index]
+
+    def replay_prev(self):
+        if self.replay_index <= 0:
+            self.replay_index = len(self.replay_df) - 1
+        self.replay_index -= 1
+        return self.replay_df.iloc[self.replay_index]
+
+    def replay_next(self):
+        if self.replay_index >= len(self.replay_df) - 1:
+            self.replay_index = 0
+        self.replay_index += 1
+        return self.replay_df.iloc[self.replay_index - 1]
+    
+    def replay_reset(self):
+        self.replay_index = 0
+        return self.replay_df.iloc[self.replay_index]
+
 if __name__ == "__main__":
     ser = Service()
     df = ser.generate_figure(1)
