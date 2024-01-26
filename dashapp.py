@@ -127,16 +127,18 @@ def update_graph(patient_id):
     ser.replay_set_up(patient_id)
     fig_r = px.line(df, x='time', y=["R1", "R2", "R3"],
                     title='Right leg',
-                    range_x=[df.time.min(), df.time.min()+60], 
+                    range_x=[df.time.max()-60, df.time.max()], 
                     range_y=[-10,1034],
                     height=400, width=400)
 
     fig_l = px.line(df, x='time', y=["L1", "L2", "L3"], 
                     title='Left leg',
                     
-                    range_x=[df.time.min(), df.time.min()+60], 
+                    range_x=[df.time.max() - 60, df.time.max()], 
                     range_y=[-10,1034],
                     height=400, width=400)
+
+
 
     fig_l['data'][0]['line']['color'] = '#0000ff'
     fig_l['data'][1]['line']['color'] = '#ff00ff'

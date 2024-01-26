@@ -40,17 +40,17 @@ def patient(patient_id):
 
 @socketio.on('update_window_frame')
 def update_window_frame(msg):
-    print("update_window_frame " + str(msg))
+    
     service.set_window_frame(patient_id_global, int(msg)/100)
 
 @socketio.on('upadate_window_offset')
 def update_window_offset(msg):
-    print("update_windpw_offset " + str(msg))
+    
     service.set_window_offset(patient_id_global, int(msg)/100)
             
 @socketio.on('load_me_figure')
 def get_figure(msg):
-    print("load_me_figure " + str(msg))
+    
     fig = service.generate_figure_and_emit(patient_id_global)
 
 @socketio.on('give_me_data')

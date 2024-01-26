@@ -74,5 +74,5 @@ class DB:
 
 if __name__ == "__main__":
     db = DB()
-    print(db.get(1))
+    
     db.close()

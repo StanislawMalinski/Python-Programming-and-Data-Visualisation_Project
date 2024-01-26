@@ -45,7 +45,7 @@ class Service:
         try:
             self.db = DB()
         except Exception as e:
-            print(e)
+            
             exit()
         row = [None] * self.NUM_OF_INDEXES
         while self.should_run:
@@ -54,10 +54,10 @@ class Service:
                     row[index] = self.get_mesurment_for_patient(patient_id)
                     self.db.insert(patient_id, row[index])
                     self.recive_callback(row)
-                    print("Patient {} updated".format(patient_id))
+                    
                 except Exception as e:
-                    print("Patient {} failed to update".format(patient_id))
-                    print(e)
+                    
+                    
                     continue
             time.sleep(self.interval)
         self.close()
@@ -69,9 +69,8 @@ class Service:
             try:
                 row = self.get_mesurment_for_patient(patient_id)
                 self.recive_callback(row)
-                print("Patient {} updated".format(patient_id))
-            except Exception:
-                print("Patient {} failed to update".format(patient_id))
+            except Exception as e:
+                continue
             time.sleep(self.interval)
         
     def close(self):
@@ -84,7 +83,7 @@ class Service:
         try:
             db = DB()
         except Exception as e:
-            print(e)
+            
             exit()
         return db
 
@@ -117,7 +116,7 @@ class Service:
         self.socket.emit('update_activity_figure', html)
 
     def plot(self, df):
-        print(df)
+        
         fig, ax = plt.subplots(3,2, figsize=(10,10), dpi=100)
         for i, s in enumerate(['L1','R1', 'L2', 'R2', 'L3', 'R3']):
             ax[i // 2, i % 2].plot(df.index, df[s], label=s)
@@ -141,7 +140,7 @@ class Service:
         return self.replay_df.iloc[self.replay_index]
 
     def replay_row(self):
-        print(self.replay_index)
+        
         return self.replay_df.iloc[self.replay_index]
 
     def replay_prev(self):
@@ -163,4 +162,4 @@ class Service:
 if __name__ == "__main__":
     ser = Service()
     df = ser.generate_figure(1)
-    print(df)
+    
