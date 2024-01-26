@@ -65,14 +65,15 @@
         var window_offset = document.getElementById("window-offset");
         var activity_figure = document.getElementById("activity-figure");
 
-        window_frame.oninput = function() {
+        window_frame.onmouseup = function() {
             socket.emit('update_window_frame', this.value);
         }
 
-        window_offset.oninput = function() {
+        window_offset.onmouseup = function() {
             socket.emit('upadate_window_offset', this.value);
+            console.log(this.value)
         }
-
+    
         socket.on('update_activity_figure', function(msg) {
             activity_figure.innerHTML = msg;
         })

@@ -47,8 +47,29 @@ def getPatientDetails(row):
 
 def getFeetImage(row):
     el = html.Div([
-        html.Img(src="/static/feet.jpg")
+        html.Img(src="static/feets.jpg", style={"width": "400px"}),
+        html.Div([
+            html.Div([
+                html.Label("L1", className="pulsing-circle"),
+            ], id="L1"),
+            html.Div([
+                html.Label("L2", className="pulsing-circle"),
+            ], id="L2"),
+            html.Div([
+                html.Label("L3", className="pulsing-circle"),
+            ], id="L3"),
+            html.Div([
+                html.Label("R1", className="pulsing-circle"),
+            ], id="R1"),
+            html.Div([
+                html.Label("R2", className="pulsing-circle"),
+            ], id="R2"),
+            html.Div([
+                html.Label("R3", className="pulsing-circle"),
+            ], id="R3"),
+        ], id="animated-container")
     ])
+    return [el]
 
 
 app.layout = html.Div(
@@ -61,20 +82,23 @@ app.layout = html.Div(
             dbc.Col([
                 html.H3("Patient details:"),
                 html.Div(id='patient-details', children=[])], style={'width': '50%'}),
-            dbc.Col([html.Div(id='table', children=[])], style={'width': '50%'})
+            dbc.Col([
+                html.Div(id='table', children=[]),
+                html.Button('start', id='start'),
+                html.Button('stop', id='stop'),
+                ], 
+                style={'width': '50%'})
+
         ], style={'display': 'flex'}),
         dbc.Row([
             dbc.Col([
-                html.H3("Right leg:"),
-                dcc.Graph(id='graph-right', figure={})], style={'width': '50%'}),
+                dcc.Graph(id='graph-right', figure={})], style={'width': '33%'}),
             dbc.Col([
-                html.H3("Left leg:"),
-                dcc.Graph(id='graph-left', figure={})], style={'width': '50%'}),
+                dcc.Graph(id='graph-left', figure={})], style={'width': '33%'}),
+            dbc.Col([
+                html.Div(id='feet-image', children=[])], style={'width': '33%'}),
         ],style={'display': 'flex'}),
-
-        html.Button('start', id='start'),
-        html.Button('stop', id='stop'),
-        html.Div(id='feet-image', children=[])
+        
     ]
 )
 
@@ -93,11 +117,13 @@ def update_graph(patient_id, data):
     df = ser.get_df(patient_id)
     print(df)
     fig_r = px.line(df, x='time', y=["R1", "R2", "R3"],
+                    title='Right leg',
                     range_x=[df.time.min(), df.time.max()], 
                     range_y=[0,1024],
                     height=400, width=400)
 
     fig_l = px.line(df, x='time', y=["L1", "L2", "L3"], 
+                    title='Left leg',
                     range_x=[df.time.min(), df.time.max()], 
                     range_y=[0,1024],
                     height=400, width=400)

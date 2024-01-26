@@ -18,6 +18,7 @@ class Service:
         self.client = Client(timeout=self.timeout)
         self.interval = interval
         self.socket = socket
+        self.db = DB()
 
         self.window_offset = 0.1
         self.window_frame = 0
@@ -36,6 +37,9 @@ class Service:
     def run(self):
         self.should_run = True
         Thread(name="Service-Thread", target=self._run).start()
+
+    def get_row(self, patient_id):
+        return self.get_mesurment_for_patient(patient_id)
 
     def _run(self):
         try:
@@ -89,7 +93,7 @@ class Service:
         rows = db.get(id)
         df = pd.DataFrame(rows, columns=db.COLUMN_NAME)
         df.index = df['time']
-        df = df.drop(columns=['time', 'id'])
+        df = df.drop(columns=['id', 'patient_id'])
         db.close()
         return df
     
@@ -113,6 +117,7 @@ class Service:
         self.socket.emit('update_activity_figure', html)
 
     def plot(self, df):
+        print(df)
         fig, ax = plt.subplots(3,2, figsize=(10,10), dpi=100)
         for i, s in enumerate(['L1','R1', 'L2', 'R2', 'L3', 'R3']):
             ax[i // 2, i % 2].plot(df.index, df[s], label=s)
